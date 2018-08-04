@@ -8,7 +8,7 @@ TEST(printing, char_printing) {
     auto oldbuf = std::cout.rdbuf();
     std::cout.rdbuf(os.rdbuf());
 
-    print_integer(char(1));
+    print_ip(char(1));
 
     EXPECT_EQ(os.str(), "1\n");
 
@@ -20,7 +20,7 @@ TEST(printing, short_printing) {
     auto oldbuf = std::cout.rdbuf();
     std::cout.rdbuf(os.rdbuf());
 
-    print_integer(short(2018));
+    print_ip(short(2018));
 
     EXPECT_EQ(os.str(), "7.226\n");
 
@@ -32,7 +32,7 @@ TEST(printing, int_printing) {
     auto oldbuf = std::cout.rdbuf();
     std::cout.rdbuf(os.rdbuf());
 
-    print_integer(int(0xaaaaaaaa));
+    print_ip(int(0xaaaaaaaa));
 
     EXPECT_EQ(os.str(), "170.170.170.170\n");
 
@@ -44,9 +44,21 @@ TEST(printing, long_printing) {
     auto oldbuf = std::cout.rdbuf();
     std::cout.rdbuf(os.rdbuf());
 
-    print_integer(long(0x123456789abcdef));
+    print_ip(long(0x123456789abcdef));
 
     EXPECT_EQ(os.str(), "1.35.69.103.137.171.205.239\n");
+
+    std::cout.rdbuf(oldbuf);
+}
+
+TEST(printing, string_printing) {
+    std::ostringstream os;
+    auto oldbuf = std::cout.rdbuf();
+    std::cout.rdbuf(os.rdbuf());
+
+    print_ip(std::string("127.0.0.1"));
+
+    EXPECT_EQ(os.str(), "127.0.0.1\n");
 
     std::cout.rdbuf(oldbuf);
 }
