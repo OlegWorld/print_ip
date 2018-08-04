@@ -4,6 +4,14 @@
 #include <string>
 #include <type_traits>
 
+template <template <typename, typename> typename Cont, typename T, typename Alloc>
+void print_ip(const Cont<T, Alloc>& ip) {
+    for (const auto& el : ip) {
+        std::cout << int(el) << (&el != &ip.back() ? "." : "");
+    }
+    std::cout << std::endl;
+}
+
 template <typename T>
 std::enable_if_t<std::is_same<T, std::string>::value> print_ip(const T& ip) {
     std::cout << ip << std::endl;
@@ -17,6 +25,3 @@ std::enable_if_t<std::is_integral<T>::value> print_ip(const T& ip) {
     }
     std::cout << std::endl;
 }
-
-
-

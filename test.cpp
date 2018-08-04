@@ -1,5 +1,7 @@
 #include <iostream>
 #include <sstream>
+#include <vector>
+#include <list>
 #include <gtest/gtest.h>
 #include "ip_printer.h"
 
@@ -59,6 +61,30 @@ TEST(printing, string_printing) {
     print_ip(std::string("127.0.0.1"));
 
     EXPECT_EQ(os.str(), "127.0.0.1\n");
+
+    std::cout.rdbuf(oldbuf);
+}
+
+TEST(printing, vector_printing) {
+    std::ostringstream os;
+    auto oldbuf = std::cout.rdbuf();
+    std::cout.rdbuf(os.rdbuf());
+
+    print_ip(std::vector<unsigned char>{192, 168, 0, 1});
+
+    EXPECT_EQ(os.str(), "192.168.0.1\n");
+
+    std::cout.rdbuf(oldbuf);
+}
+
+TEST(printing, list_printing) {
+    std::ostringstream os;
+    auto oldbuf = std::cout.rdbuf();
+    std::cout.rdbuf(os.rdbuf());
+
+    print_ip(std::list<unsigned char>{192, 168, 0, 1});
+
+    EXPECT_EQ(os.str(), "192.168.0.1\n");
 
     std::cout.rdbuf(oldbuf);
 }
