@@ -2,12 +2,32 @@
 
 #include <iostream>
 #include <string>
-#include <tuple>
 #include <type_traits>
+#include <vector>
+#include <list>
+#include <tuple>
+
+template <typename T>
+struct is_vector : std::false_type {};
+
+template <typename U, typename Alloc>
+struct is_vector<std::vector<U, Alloc>> : std::true_type {};
+
+template <typename T>
+struct is_list : std::false_type {};
+
+template <typename U, typename Alloc>
+struct is_list<std::list<U, Alloc>> : std::true_type {};
+
+template <typename T>
+struct is_tuple : std::false_type {};
+
+template <typename... Args>
+struct is_tuple<std::tuple<Args...>> : std::true_type {};
 
 template <typename T>
 std::enable_if_t<std::is_same<T, std::string>::value> print_ip(const T& ip) {
-    std::cout << ip << std::endl;
+    std::cout << ip;
 }
 
 template <typename T>
@@ -16,28 +36,46 @@ std::enable_if_t<std::is_integral<T>::value> print_ip(const T& ip) {
         std::cout   << ((ip >> 8 * (i - 1)) & 0xff)
                     << (i != 1 ? "." : "");
     }
-    std::cout << std::endl;
 }
-
-//template <template <typename, typename> typename Cont, typename T, typename Alloc>
-//void print_ip(const Cont<T, Alloc>& ip) {
-//    for (const auto& el : ip) {
-//        std::cout << int(el) << (&el != &ip.back() ? "." : "");
-//    }
-//    std::cout << std::endl;
-//}
 
 template <typename T>
-std::enable_if_t<!(std::is_same<T, std::string>::value) &&
-                 !(std::is_integral<T>::value)>
-                 print_ip(const T& ip) {
+std::enable_if_t<is_vector<T>::value || is_list<T>::value> print_ip(const T& ip) {
     for (const auto& el : ip) {
-        std::cout << int(el) << (&el != &ip.back() ? "." : "");
+        print_ip(el);
+        std::cout <<  (&el != &ip.back() ? "." : "");
     }
-    std::cout << std::endl;
 }
 
-//template <typename... Args>
-//void print_ip(const std::tuple<Args...>& ip) {
-//
-//}
+template<int index, typename... Args>
+struct iterate_tuple
+{
+    static void print(const std::tuple<Args...>& t)
+    {
+        iterate_tuple<index - 1, Args...>::print(t);
+
+        std::cout << ".";
+        print_ip(std::get<index>(t));
+    }
+};
+
+template<typename... Args>
+struct iterate_tuple<0, Args...>
+{
+    static void print(const std::tuple<Args...>& t)
+    {
+        print_ip(std::get<0>(t));
+    }
+};
+
+template <typename... Args>
+void print_tuple(const std::tuple<Args...>& t) {
+    constexpr int tuple_size = std::tuple_size<std::tuple<Args...>>::value;
+
+    iterate_tuple<tuple_size - 1, Args...>::print(t);
+}
+
+template <typename T>
+std::enable_if_t<is_tuple<T>::value> print_ip(const T& ip) {
+    print_tuple(ip);
+}
+
