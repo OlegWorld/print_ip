@@ -24,6 +24,9 @@ deploy:
     skip-cleanup: true
     github-token: $GITHUB_TOKEN
     keep-history: true
+    local-dir: doxygen
+    repo: print_ip.github.io
+    target-branch: master
     on:
       branch: master
   - provider: script
