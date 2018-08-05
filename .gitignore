@@ -1,0 +1,13 @@
+cmake-build-debug
+.idea
+*.cmake
+CMakeCache.txt
+install_manifest.txt
+Makefile
+print_ip
+*.cbp
+*.deb
+printer_test
+Testing
+_CPack_Packages
+CMakeFiles
