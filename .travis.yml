@@ -25,7 +25,7 @@ deploy:
     github-token: $GITHUB_TOKEN
     keep-history: true
     local-dir: doxygen/html
-    repo: print_ip.github.io
+    repo: OlegWorld/print_ip.github.io
     target-branch: master
     on:
       branch: master
