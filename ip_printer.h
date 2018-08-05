@@ -26,7 +26,17 @@ template <typename... Args>
 struct is_tuple<std::tuple<Args...>> : std::true_type {};
 
 template <typename T>
-std::enable_if_t<std::is_same<T, std::string>::value> print_ip(const T& ip) {
+struct is_cstring : std::false_type {};
+
+template <>
+struct is_cstring<char[]> : std::true_type {};
+
+template <size_t N>
+struct is_cstring<char[N]> : std::true_type {};
+
+template <typename T>
+std::enable_if_t<std::is_same<T, std::string>::value ||
+                 is_cstring<T>::value> print_ip(const T& ip) {
     std::cout << ip;
 }
 

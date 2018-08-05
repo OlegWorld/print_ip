@@ -65,6 +65,18 @@ TEST(printing, string_printing) {
     std::cout.rdbuf(oldbuf);
 }
 
+TEST(printing, cstring_printing) {
+    std::ostringstream os;
+    auto oldbuf = std::cout.rdbuf();
+    std::cout.rdbuf(os.rdbuf());
+
+    print_ip("127.0.0.1");
+
+    EXPECT_EQ(os.str(), "127.0.0.1");
+
+    std::cout.rdbuf(oldbuf);
+}
+
 TEST(printing, list_printing) {
     std::ostringstream os;
     auto oldbuf = std::cout.rdbuf();
